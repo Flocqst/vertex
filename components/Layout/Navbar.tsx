@@ -1,9 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+
 
 function Navbar() {
     return (
-    <nav className="fixed top-0 z-30 fflex-no-wrap relative flex w-full items-center justify-between bg-orange-100 px-6 py-3">
+    <nav className="fixed top-0 z-30 flex-no-wrap relative flex w-full items-center justify-between bg-orange-100 px-6 py-3">
         <div className="flex w-full flex-wrap items-center justify-between px-4">
             <ul className="list-style-none mr-auto flex flex-col pl-0 lg:flex-row">
                 <li className="mb-4 lg:mb-0 lg:pr-8">
@@ -31,7 +33,7 @@ function Navbar() {
 
         </div>
         <div className="relative flex items-center">
-            <p className="text-neutral-500">Connect</p>
+            <ConnectButton/>
         </div>
     </nav>
     )
