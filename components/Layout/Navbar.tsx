@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ModeToggle } from "./ModeToggle";
 
 
 function Navbar() {
@@ -34,6 +35,7 @@ function Navbar() {
         </div>
         <div className="relative flex items-center">
             <ConnectButton/>
+            <ModeToggle/>
         </div>
     </nav>
     )
