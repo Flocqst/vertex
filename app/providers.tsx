@@ -16,11 +16,12 @@ import {
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
+const NEXT_PUBLIC_ALCHEMY_API_KEY : string = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!;
 
 const { chains, publicClient } = configureChains(
     [mainnet, optimism, goerli, optimismGoerli],
     [
-      alchemyProvider({ apiKey: "process.env.NEXT_PUBLIC_ALCHEMY_ID" }),
+      alchemyProvider({ apiKey: NEXT_PUBLIC_ALCHEMY_API_KEY }),
       publicProvider()
     ]
   );
