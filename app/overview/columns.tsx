@@ -19,7 +19,7 @@ export const columns: ColumnDef<Balance>[] = [
   },
   {
     accessorKey: "value",
-    header: () => <div className="text-center">Value</div>,
+    header: () => <div className="text-center">Price Feed</div>,
     cell: ({ row }) => {
       const value = parseFloat(row.getValue("value"))
       const formatted = new Intl.NumberFormat("en-US", {
