@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { useAccount, useBalance, useContractRead, useContractReads } from "wagmi";
+import { useAccount, useBalance, useContractRead, useContractReads, useNetwork } from "wagmi";
 import { DataTable } from './data-table';
 import { Balance, columns } from './columns';
-
+import { aggregatorV3InterfaceABI } from '../../constants/abis/aggregatorV3Interface'
+import { ADDRESSES } from '../../constants/address'
 
 function getWalletBalances(ethPriceFeed: any, ethBalance: any, opPriceFeed: any, opBalance: any, sUsdPriceFeed: any, sUsdBalance: any): Balance[] {
     return [
@@ -26,75 +27,9 @@ function getWalletBalances(ethPriceFeed: any, ethBalance: any, opPriceFeed: any,
     ]
   }
 
-const aggregatorV3InterfaceABI = [
-  {
-    inputs: [],
-    name: "decimals",
-    outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "description",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "uint80", name: "_roundId", type: "uint80" }],
-    name: "getRoundData",
-    outputs: [
-      { internalType: "uint80", name: "roundId", type: "uint80" },
-      { internalType: "int256", name: "answer", type: "int256" },
-      { internalType: "uint256", name: "startedAt", type: "uint256" },
-      { internalType: "uint256", name: "updatedAt", type: "uint256" },
-      { internalType: "uint80", name: "answeredInRound", type: "uint80" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "latestRoundData",
-    outputs: [
-      { internalType: "uint80", name: "roundId", type: "uint80" },
-      { internalType: "int256", name: "answer", type: "int256" },
-      { internalType: "uint256", name: "startedAt", type: "uint256" },
-      { internalType: "uint256", name: "updatedAt", type: "uint256" },
-      { internalType: "uint80", name: "answeredInRound", type: "uint80" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "version",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-] as const
-
-const chainlinkEthContract = {
-  address: "0x13e3Ee699D1909E989722E753853AE30b17e08c5" as `0x${string}`,
-  abi: aggregatorV3InterfaceABI,
-}
-
-const chainlinkOpContract = {
-  address: '0x0D276FC14719f9292D5C1eA2198673d1f4269246' as `0x${string}`,
-  abi: aggregatorV3InterfaceABI,
-}
-
-const chainlinksUsdContract = {
-  address: '0x7f99817d87baD03ea21E05112Ca799d715730efe' as `0x${string}`,
-  abi: aggregatorV3InterfaceABI,
-}
-
-
 export default function Wallet() {
     const { address, isConnected } = useAccount();
-
+    const { chain, chains } = useNetwork()
     const ethBalance = useBalance({
         address: address,
       })
@@ -111,11 +46,13 @@ export default function Wallet() {
     const ethPriceFeed = useContractReads({
       contracts: [
         {
-          ...chainlinkEthContract,
+          address: ADDRESSES.ChainLinkETHUSD[chain?.id as number],
+          abi: aggregatorV3InterfaceABI,
           functionName: 'decimals',
         },
         {
-          ...chainlinkEthContract,
+          address: ADDRESSES.ChainLinkETHUSD[chain?.id as number],
+          abi: aggregatorV3InterfaceABI,
           functionName: 'latestRoundData',
         },
       ],
@@ -124,11 +61,13 @@ export default function Wallet() {
     const opPriceFeed = useContractReads({
       contracts: [
         {
-          ...chainlinkOpContract,
+          address: ADDRESSES.ChainLinkOPUSD[chain?.id as number],
+          abi: aggregatorV3InterfaceABI,
           functionName: 'decimals',
         },
         {
-          ...chainlinkOpContract,
+          address: ADDRESSES.ChainLinkOPUSD[chain?.id as number],
+          abi: aggregatorV3InterfaceABI,
           functionName: 'latestRoundData',
         },
       ],
@@ -137,11 +76,13 @@ export default function Wallet() {
     const sUsdPriceFeed = useContractReads({
       contracts: [
         {
-          ...chainlinksUsdContract,
+          address: ADDRESSES.ChainLinkSUSDUSD[chain?.id as number],
+          abi: aggregatorV3InterfaceABI,
           functionName: 'decimals',
         },
         {
-          ...chainlinksUsdContract,
+          address: ADDRESSES.ChainLinkSUSDUSD[chain?.id as number],
+          abi: aggregatorV3InterfaceABI,
           functionName: 'latestRoundData',
         },
       ],
@@ -149,7 +90,6 @@ export default function Wallet() {
     
     const colData = getWalletBalances(ethPriceFeed, ethBalance, opPriceFeed, opBalance, sUsdPriceFeed, sUsdBalance)
      
-
     if (ethBalance?.isError) return <div>Error fetching balance</div>
     return (
         <div>
@@ -162,7 +102,6 @@ export default function Wallet() {
                     <code className="bg-zinc-700 text-zinc-200 p-4 rounded block mb-4"><pre>{address}</pre></code>
                     <DataTable columns={columns} data={colData} />
                 </div>}
-            
         </div>
     );
 };
